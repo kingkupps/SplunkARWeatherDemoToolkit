@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Weather Event Emitter Demo</title>
+</head>
+<body>
+    <div class="container">
+        <div id="heading" class="row jumbotron" style="margin-top: 20px;">
+            <h1>Weather Event Emitter</h1>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <h3 style="margin-bottom: 10px;">Most Recent Weather Event</h3>
+                <div class="card" style="margin-bottom: 10px;">
+                    <div class="card-body">
+                        <pre><code id="last-event-content">Click "Start Polling" to start uploading weather events to Splunk.</code></pre>
+                    </div>
+                </div>
+                <button class="btn btn-link" id="all-uploaded-events-link">See All Uploaded Events</button>
+            </div>
+            <div class="col-4">
+                <form>
+                    <div class="form-group">
+                        <label for="splunk-hostname">Splunk Hostname</label>
+                        <input id="splunk-hostname" class="form-control" type="text" placeholder="ex. https://my.example.splunk.instance">
+                    </div>
+                    <div class="form-group">
+                        <label for="hec-token">HEC Token</label>
+                        <input id="hec-token" class="form-control" type="text" placeholder="ex. 12345678-abcd-4321-efgh-26z25y24x22">
+                    </div>
+                    <div class="form-group">
+                        <label for="port">HEC Port</label>
+                        <input id="port" class="form-control" type="number" placeholder="ex. 3000" aria-describedby="port-help">
+                        <small id="port-help" class="form-text text-muted">Optional. Defaults to 8088.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="index">Splunk Index</label>
+                        <input id="index" class="form-control" type="text" placeholder="ex. weather-demo-index" aria-describedby="index-help">
+                        <small id="index-help" class="form-text text-muted">Optional. Defaults to "main".</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="poll-interval">Event Polling Interval</label>
+                        <input id="poll-interval" class="form-control" type="number" placeholder="ex. 3" aria-describedby="poll-interval-help">
+                        <small id="poll-interval-help" class="form-text text-muted">Optional. The amount of time between uploading weather events. Defaults to 0.5.</small>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="disable-ssl-verify">
+                        <label class="form-check-label" for="disable-ssl-verify">
+                            Disable SSL Certificate Verification
+                        </label>
+                    </div>
+                    <div class="form-check row" style="margin-top: 15px; margin-bottom: 15px;">
+                        <button type="button" class="btn btn-info col-6" id="start-polling-button">Start Polling</button>
+                        <button type="button" class="btn btn-info col-4" id="stop-polling-button" disabled>Stop</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

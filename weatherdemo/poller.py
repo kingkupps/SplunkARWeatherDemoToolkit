@@ -116,8 +116,10 @@ class WeatherListener(PollingThread):
         temp = self._sense_hat.get_temperature()
         orientation = self._sense_hat.get_orientation()
         return {
-            'celsius': round(temp),
-            'fahrenheit': round((1.8 * temp) + 32),
+            'temperature': {
+                'celsius': round(temp),
+                'fahrenheit': round((1.8 * temp) + 32)
+            },
             'pressure': self._sense_hat.get_pressure(),
             'humidity': self._sense_hat.get_humidity(),
             'acceleration': self._sense_hat.get_accelerometer_raw(),

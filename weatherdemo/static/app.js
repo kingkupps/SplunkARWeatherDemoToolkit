@@ -75,6 +75,7 @@ class PollingController {
 }
 
 
+/** Opens a new tab or window containing a Splunk search using the given Splunk hostname and index. */
 function seeAllEvents() {
     if (!highlightFormInput(HOST_FIELD_ID)) {
         console.log('Returning early');
@@ -139,6 +140,7 @@ function getFormValuesAsGetParameters() {
 }
 
 
+/** Returns the value of an input field or defaultValue if the input is empty. */
 function getInputValue(id, defaultValue=null) {
     const element = document.getElementById(id);
     if (element === null || element === undefined) {

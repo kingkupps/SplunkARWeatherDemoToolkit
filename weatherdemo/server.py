@@ -1,6 +1,7 @@
 import flask
 import functools
 import json
+import logging
 import threading
 
 from weatherdemo import poller
@@ -26,15 +27,14 @@ class PollingThreadManager(object):
     def spawn(self, **kwargs):
         """Creates and starts a new weather emitter thread with the given settings (mostly for HEC)."""
         self._lock.acquire()
-        if self._current_thread:
-            self._current_thread.stop()
-        new_thread = poller.WeatherListener(**kwargs)
-        new_thread.start()
-        new_thread_name = new_thread.name
-        self._current_thread = new_thread
-        self._lock.release()
-
-        return new_thread_name
+        try:
+            if self._current_thread:
+                self._current_thread.stop()
+            new_thread = poller.WeatherListener(**kwargs)
+            new_thread.start()
+            self._current_thread = new_thread
+        finally:
+            self._lock.release()
 
 
 thread_manager = PollingThreadManager()
@@ -71,17 +71,11 @@ def start():
             'reason': 'Request must include a Splunk hostname and an HEC token to begin polling.'
         }))
 
-    thread_name = thread_manager.spawn(
-        host=params['host'],
-        token=params['token'],
-        port=int(params.get('port', 8088)),
-        disable_ssl_verify=True if params.get('disable_ssl_verify') == 'true' else False,
-        index=params.get('index', 'ar-weather-demo'),
-        upload_interval=float(params.get('upload_interval', 0.5)))
-    return flask.Response(status=200, content_type='application/json', response=json.dumps({
-        'status': 200,
-        'thread_name': thread_name
-    }))
+    thread_manager.spawn(host=params['host'], token=params['token'], port=int(params.get('port', 8088)),
+                         disable_ssl_verify=True if params.get('disable_ssl_verify') == 'true' else False,
+                         index=params.get('index', 'ar-weather-demo'),
+                         upload_interval=float(params.get('upload_interval', 0.5)))
+    return flask.Response(status=200)
 
 
 @app.route('/stop', methods=["GET"])

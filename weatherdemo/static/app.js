@@ -85,8 +85,8 @@ function seeAllEvents() {
     const indexParam = encodeURIComponent('index=' + getInputValue(INDEX_FIELD_ID, 'ar-weather-demo'));
 
     // Open Splunk in a new tab or window depending on the user's system preferences
-    const searchURL = `${hostname}:8000/en-US/app/search?${indexParam}`;
-    const splunkWindow = window.open(searchURL, '_blank');
+    const searchURL = `${hostname}:8000/en-US/app/search/search?q=${indexParam}`;
+    const splunkWindow = window.open(searchURL, 'Splunk_Search');
     splunkWindow.focus();
 }
 

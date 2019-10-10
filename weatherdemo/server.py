@@ -1,7 +1,6 @@
 import flask
 import functools
 import json
-import logging
 import threading
 
 from weatherdemo import poller

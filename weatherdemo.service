@@ -1,0 +1,14 @@
+[Unit]
+Description=The weather demo server
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -m weatherdemo.server
+WorkingDirectory=/home/pi/SplunkARWeatherDemoToolkit
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target

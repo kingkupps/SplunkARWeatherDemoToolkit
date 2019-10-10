@@ -23,13 +23,12 @@ class PollingThreadManager(object):
         self._lock.release()
         return thread
 
-    def spawn(self, host, token, port=8088, disable_ssl_verify=False, index='main', upload_interval=0.5):
+    def spawn(self, **kwargs):
         """Creates and starts a new weather emitter thread with the given settings (mostly for HEC)."""
         self._lock.acquire()
         if self._current_thread:
             self._current_thread.stop()
-        new_thread = poller.WeatherListener(host, token, port=port, disable_ssl_verify=disable_ssl_verify, index=index,
-                                            upload_interval=upload_interval)
+        new_thread = poller.WeatherListener(**kwargs)
         new_thread.start()
         new_thread_name = new_thread.name
         self._current_thread = new_thread
@@ -73,11 +72,11 @@ def start():
         }))
 
     thread_name = thread_manager.spawn(
-        params['host'],
-        params['token'],
+        host=params['host'],
+        token=params['token'],
         port=int(params.get('port', 8088)),
         disable_ssl_verify=True if params.get('disable_ssl_verify') == 'true' else False,
-        index=params.get('index', 'main'),
+        index=params.get('index', 'ar-weather-demo-index'),
         upload_interval=float(params.get('upload_interval', 0.5)))
     return flask.Response(status=200, content_type='application/json', response=json.dumps({
         'status': 200,

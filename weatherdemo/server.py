@@ -1,15 +1,12 @@
 import flask
+import functools
 import json
-import logging
 import threading
 
 from weatherdemo import poller
 
 
 app = flask.Flask(__name__)
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-logger.addHandler(logging.FileHandler('weather-demo.log', mode='w+'))
 
 
 class PollingThreadManager(object):
@@ -44,13 +41,28 @@ class PollingThreadManager(object):
 thread_manager = PollingThreadManager()
 
 
+def propagate_exceptions(handler):
+    @functools.wraps(handler)
+    def decorate(*args, **kwargs):
+        try:
+            return handler(*args, **kwargs)
+        except Exception as e:
+            return flask.Response(status=500, content_type='application/json', response=json.dumps({
+                'status': 500,
+                'reason': str(e)
+            }))
+    return decorate
+
+
 @app.route('/')
+@propagate_exceptions
 def home():
     """Serves the polling UI."""
     return flask.render_template('index.html')
 
 
 @app.route('/start', methods=['GET'])
+@propagate_exceptions
 def start():
     """Starts a new weather emitter thread and includes the newly created thread name in the response for debugging."""
     params = flask.request.args
@@ -74,6 +86,7 @@ def start():
 
 
 @app.route('/stop', methods=["GET"])
+@propagate_exceptions
 def stop():
     """Cancels the active weather emitter thread."""
     weather_thread = thread_manager.current
@@ -84,6 +97,7 @@ def stop():
 
 # TODO: It's probably more appropriate to implement this via websocket.
 @app.route('/last', methods=['GET'])
+@propagate_exceptions
 def last():
     """
     Returns the last event uploaded by the active weather emitter thread if there is one. If there is no event, an

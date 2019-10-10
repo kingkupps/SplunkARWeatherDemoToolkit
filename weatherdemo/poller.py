@@ -63,14 +63,15 @@ class PollingThread(threading.Thread):
 
 class WeatherListener(PollingThread):
 
-    def __init__(self, host, token, port=8088, disable_ssl_verify=False, index='main', upload_interval=0.5):
+    def __init__(self, host, token, port=8088, disable_ssl_verify=False, index='ar-weather-demo-index',
+                 upload_interval=0.5):
         super(WeatherListener, self).__init__()
         self._url = '{host}:{port}/services/collector/event'.format(host=host, port=port)
         self._index = index
         self._upload_interval = upload_interval
 
         self._sense_hat = sense_hat.SenseHat()
-        
+
         self._session = requests.Session()
         self._session.verify = not disable_ssl_verify
         self._session.max_redirects = 1
@@ -84,22 +85,11 @@ class WeatherListener(PollingThread):
 
     def step(self):
         """Retrieves weather data from the Sense Hat and uploads the results to Splunk via HEC."""
-        temp = self._sense_hat.get_temperature()
-        orientation = self._sense_hat.get_orientation()
         event = {
             'time': round(time.time(), 3),
             'index': self._index,
             'source': 'raspberry-pi-weather-demo',
-            'event': {
-                'celsius': round(temp),
-                'fahrenheit': round((1.8 * temp) + 32),
-                'pressure': self._sense_hat.get_pressure(),
-                'humidity': self._sense_hat.get_humidity(),
-                'acceleration': self._sense_hat.get_accelerometer_raw(),
-                'gyroscope': self._sense_hat.get_gyroscope_raw(),
-                'compass': orientation,
-                'direction': orientation['yaw']
-            }
+            'event': self._read_weather_data()
         }
         try:
             response = self._session.post(self._url, json=event, timeout=5)
@@ -115,13 +105,27 @@ class WeatherListener(PollingThread):
                 return False, (False, error)
         except Exception as e:
             error = {
-                'status': 502,
+                'status': 500,
                 'reason': str(e),
                 'tip': 'Are you connecting to the correct HEC port? Does the hostname start with http:// or https://?'
             }
             return False, (False, error)
 
         return True, (True, event)
+
+    def _read_weather_data(self):
+        temp = self._sense_hat.get_temperature()
+        orientation = self._sense_hat.get_orientation()
+        return {
+            'celsius': round(temp),
+            'fahrenheit': round((1.8 * temp) + 32),
+            'pressure': self._sense_hat.get_pressure(),
+            'humidity': self._sense_hat.get_humidity(),
+            'acceleration': self._sense_hat.get_accelerometer_raw(),
+            'gyroscope': self._sense_hat.get_gyroscope_raw(),
+            'compass': orientation,
+            'direction': orientation['yaw']
+        }
 
     def cleanup(self):
         self._session.close()

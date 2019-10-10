@@ -1,14 +1,15 @@
 'use strict';
 
 // Form fields
+const DISABLE_SSL_VERIFY_CHECK_ID = 'disable-ssl-verify';
 const HOST_FIELD_ID = 'splunk-hostname';
 const HEC_TOKEN_FIELD_ID = 'hec-token';
-const PORT_FIELD_ID = 'port';
 const INDEX_FIELD_ID = 'index';
 const POLL_INTERVAL_FIELD_ID = 'poll-interval';
-const DISABLE_SSL_VERIFY_CHECK_ID = 'disable-ssl-verify';
+const PORT_FIELD_ID = 'port';
 
 // Buttons
+const ALL_EVENTS_ID = 'all-uploaded-events-link';
 const START_POLLING_BUTTON_ID = 'start-polling-button';
 const STOP_POLLING_BUTTON_ID = 'stop-polling-button';
 
@@ -31,7 +32,7 @@ class PollingController {
      * Validates the Splunk info form and triggers weather event polling on the Raspberry Pi should validation succeed.
      */
     startPolling() {
-        if (!validateFormValues()) {
+        if (!highlightFormInput(HOST_FIELD_ID) || !highlightFormInput(HEC_TOKEN_FIELD_ID)) {
             return;
         }
         setCardContent(WAITING_FOR_DATA_TEXT);
@@ -41,10 +42,7 @@ class PollingController {
                 document.getElementById(STOP_POLLING_BUTTON_ID).removeAttribute('disabled');
                 this.isPolling = true;
                 this.loadLatestEvent();
-            }).catch(reason => {
-                console.log('Catch block with reason: ' + reason);
-                setCardContent(reason);
-            });
+            }).catch(reason => setCardContent(reason));
     }
 
     /** Polls every 0.2 seconds for the latest uploaded event and updates recent event card appropriately. */
@@ -58,7 +56,6 @@ class PollingController {
                 setTimeout(() => this.loadLatestEvent(), 200);
             }
         }).catch(reason => {
-            console.log('Unsuccessful event with content: ' + event);
             setCardContent(reason);
             this.stopPolling();
         });
@@ -78,28 +75,42 @@ class PollingController {
 }
 
 
+function seeAllEvents() {
+    if (!highlightFormInput(HOST_FIELD_ID)) {
+        console.log('Returning early');
+        return;
+    }
+    const hostname = getInputValue(HOST_FIELD_ID);
+    const indexParam = encodeURIComponent('index=' + getInputValue(INDEX_FIELD_ID, 'ar-weather-demo-index'));
+
+    // Open Splunk in a new tab or window depending on the user's system preferences
+    const searchURL = `${hostname}:8000/en-US/app/search?${indexParam}`;
+    const splunkWindow = window.open(searchURL, '_blank');
+    splunkWindow.focus();
+}
+
+
 /**
- * Returns whether the Splunk info form is correctly filled out. If it isn't, each incorrect field will be highlighted
- * in the UI.
+ * Highlights the form input corresponding to id with green and returns true if it is non-empty and red and returns
+ * false otherwise.
+ *
+ * @param id The element ID of the input field to highlight.
  */
-function validateFormValues() {
-    // TODO: Provide more in-depth info on whether or not the current configuration indicated on the form is valid.
-    const checkNonEmpty = (id) => {
-        const element = document.getElementById(id);
-        const value = element.value;
-        if (value === '' || value === null) {
-            element.classList.add('is-invalid');
-            element.classList.remove('is-valid');
-            return false;
-        } else {
-            element.classList.add('is-valid');
-            element.classList.remove('is-invalid');
-            return true;
-        }
-    };
-    const hostCheck = checkNonEmpty(HOST_FIELD_ID);
-    const tokenCheck = checkNonEmpty(HEC_TOKEN_FIELD_ID);
-    return hostCheck && tokenCheck;
+function highlightFormInput(id) {
+    const element = document.getElementById(id);
+    if (element === null || element === undefined) {
+        return false;
+    }
+    const value = element.value;
+    if (value === '' || value === null || value === undefined) {
+        element.classList.add('is-invalid');
+        element.classList.remove('is-valid');
+        return false;
+    } else {
+        element.classList.add('is-valid');
+        element.classList.remove('is-invalid');
+        return true;
+    }
 }
 
 
@@ -109,8 +120,8 @@ function validateFormValues() {
  */
 function getFormValuesAsGetParameters() {
     const addIfPresent = (params, key, id) => {
-        const val = document.getElementById(id).value;
-        if (val === null || val === '' || val === false || val === undefined) {
+        const val = getInputValue(id);
+        if (val === null) {
             return;
         }
         params.push(key + '=' + encodeURIComponent(val.trim()));
@@ -125,6 +136,16 @@ function getFormValuesAsGetParameters() {
         params.push('disable_ssl_verify=true');
     }
     return '?' + params.join('&');
+}
+
+
+function getInputValue(id, defaultValue=null) {
+    const element = document.getElementById(id);
+    if (element === null || element === undefined) {
+        return defaultValue;
+    }
+    const value = element.value;
+    return (value === null || value === undefined || value === '') ? defaultValue : value;
 }
 
 
@@ -167,4 +188,5 @@ window.addEventListener('load',  () => {
     const pollingController = new PollingController();
     document.getElementById(START_POLLING_BUTTON_ID).addEventListener('click', () => pollingController.startPolling());
     document.getElementById(STOP_POLLING_BUTTON_ID).addEventListener('click', () => pollingController.stopPolling());
+    document.getElementById(ALL_EVENTS_ID).addEventListener('click', () => seeAllEvents());
 });

@@ -63,8 +63,7 @@ class PollingThread(threading.Thread):
 
 class WeatherListener(PollingThread):
 
-    def __init__(self, host, token, port=8088, disable_ssl_verify=False, index='ar-weather-demo-index',
-                 upload_interval=0.5):
+    def __init__(self, host, token, port=8088, disable_ssl_verify=False, index='ar-weather-demo', upload_interval=0.5):
         super(WeatherListener, self).__init__()
         self._url = '{host}:{port}/services/collector/event'.format(host=host, port=port)
         self._index = index
@@ -88,7 +87,7 @@ class WeatherListener(PollingThread):
         event = {
             'time': round(time.time(), 3),
             'index': self._index,
-            'source': 'raspberry-pi-weather-demo',
+            'source': 'ar-weather-demo',
             'event': self._read_weather_data()
         }
         try:

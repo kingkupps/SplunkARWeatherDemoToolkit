@@ -81,7 +81,7 @@ function seeAllEvents() {
         return;
     }
     const hostname = getInputValue(HOST_FIELD_ID);
-    const indexParam = encodeURIComponent('index=' + getInputValue(INDEX_FIELD_ID, 'ar-weather-demo-index'));
+    const indexParam = encodeURIComponent('index=' + getInputValue(INDEX_FIELD_ID, 'ar-weather-demo'));
 
     // Open Splunk in a new tab or window depending on the user's system preferences
     const searchURL = `${hostname}:8000/en-US/app/search?${indexParam}`;

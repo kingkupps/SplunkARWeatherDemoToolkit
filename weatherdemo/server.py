@@ -76,7 +76,7 @@ def start():
         token=params['token'],
         port=int(params.get('port', 8088)),
         disable_ssl_verify=True if params.get('disable_ssl_verify') == 'true' else False,
-        index=params.get('index', 'ar-weather-demo-index'),
+        index=params.get('index', 'ar-weather-demo'),
         upload_interval=float(params.get('upload_interval', 0.5)))
     return flask.Response(status=200, content_type='application/json', response=json.dumps({
         'status': 200,

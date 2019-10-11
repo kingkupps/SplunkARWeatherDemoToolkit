@@ -87,7 +87,6 @@ def stop():
     return flask.Response(status=200)
 
 
-# TODO: It's probably more appropriate to implement this via websocket.
 @app.route('/last', methods=['GET'])
 @propagate_exceptions
 def last():

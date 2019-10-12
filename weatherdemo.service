@@ -3,7 +3,7 @@ Description=The weather demo server
 After=network.target
 
 [Service]
-ExecStart=/usr/bash setup_weather_demo.sh
+ExecStart=/bin/bash setup_weather_demo.sh
 WorkingDirectory=/home/pi
 StandardOutput=inherit
 StandardError=inherit

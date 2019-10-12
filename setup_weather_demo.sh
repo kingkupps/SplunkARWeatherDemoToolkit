@@ -1,6 +1,6 @@
 #!/usr/bash
 
-if  [ ! -f "SplunkARWeatherDemoToolkit" ]; then
+if  [[ ! -d "SplunkARWeatherDemoToolkit" ]]; then
   git clone "https://github.com/kingkupps/SplunkARWeatherDemoToolkit.git" || exit 1
 fi
 

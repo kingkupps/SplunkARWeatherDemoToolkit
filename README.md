@@ -106,3 +106,8 @@ becomes an issue, please file an issue using the link below.
 
 If you run into any issues at all using this toolkit, please [file issues](https://github.com/kingkupps/SplunkARWeatherDemoToolkit/issues/new?assignees=&labels=&template=bug_report.md&title=)
 to this repository with a step by step method for reproducing your issue.
+
+## Acknowledgements
+
+The favicon logo for the web UI was made by [Freepik](https://www.flaticon.com/authors/freepik) from
+[Flaticon](https://www.flaticon.com/).

@@ -77,7 +77,7 @@ def start():
     return flask.Response(status=200)
 
 
-@app.route('/stop', methods=["GET"])
+@app.route('/stop', methods=['GET'])
 @propagate_exceptions
 def stop():
     """Cancels the active weather emitter thread."""
@@ -103,7 +103,7 @@ def last():
         }))
 
     ok, event = weather_thread.poll(default=(True, None))
-    if not event:
+    if ok and not event:
         return flask.Response(status=204)
     status = 200 if ok else 400
     return flask.Response(status=status, response=json.dumps(event, sort_keys=True), content_type='application/json')

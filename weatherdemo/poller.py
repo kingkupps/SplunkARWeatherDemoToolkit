@@ -1,3 +1,4 @@
+import logging
 import queue
 import requests
 import sense_hat
@@ -93,6 +94,10 @@ class WeatherListener(PollingThread):
         try:
             response = self._session.post(self._url, json=event, timeout=5)
             if response.status_code != 200:
+                if response.status_code == 504:
+                    logging.error('Ran into 504 while uploading event: %s: %s', response.status_code, response.reason)
+                    return True, (True, None)
+
                 error = {
                     'status': response.status_code,
                     'reason': response.reason

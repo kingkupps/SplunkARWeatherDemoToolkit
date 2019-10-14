@@ -6,7 +6,7 @@ import threading
 from weatherdemo import poller
 
 
-app = flask.Flask(__name__)
+app = flask.Flask(__name__, static_url_path='/static')
 
 
 class PollingThreadManager(object):
@@ -107,6 +107,11 @@ def last():
         return flask.Response(status=204)
     status = 200 if ok else 400
     return flask.Response(status=status, response=json.dumps(event, sort_keys=True), content_type='application/json')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return app.send_static_file('storm.png')
 
 
 if __name__ == '__main__':

@@ -43,11 +43,11 @@ Next, create a dashboard for monitoring weather events from the Sense Hat add-on
 
 ## 2. Configure your Raspberry Pi and Sense Hat add-on
 
-Flash the SD card with the `weatherdemo.dmg` image. This image makes your Raspberry Pi a Wifi hot spot, which leads to a webpage that you can use to start and stop Sense Hat readings flowing into Splunk as events.
+Flash the SD card with the [this image](https://ar-demo-image.s3-us-west-2.amazonaws.com/WeatherDemo.dmg). This image makes your Raspberry Pi a Wifi hot spot, which leads to a webpage that you can use to start and stop Sense Hat readings flowing into Splunk as events.
 
 You can use [balenaEtcher](https://www.balena.io/etcher/) to flash your SD card:
 
-1. Download `weatherdemo.dmg`.
+1. Download [the image](https://ar-demo-image.s3-us-west-2.amazonaws.com/WeatherDemo.dmg).
 2. Insert your SD card into your computer.
 3. Use balenaEtcher, or another tool for flashing images into SD cards, to flash your SD card.
 
@@ -73,15 +73,15 @@ Download Splunk AR, register your iOS device, and register your Raspberry Pi as 
 
 ### 5. Get weather data into your Splunk instance
 
-Use the webpage to start getting weather data into your Splunk instance.
+The Raspberry Pi starts a web server that you will use to collect events from the Sense Hat.
 
-1. Once your Raspberry Pi is on, connect to the WiFi network "SplunkARWeatherDemo" on your computer.
-2. Navigate to TODO in a web browser.
-3. Use the web page to start and stop weather events flowing from your Raspberry Pi to your Splunk instance.
-4. Fill out the Splunk instance form on the right.
-5. Click "Start Polling" to start getting data into Splunk.
+1. Once your Raspberry Pi is on, connect to the WiFi network beginning with "SplunkAR" and ending with an IP address from your computer.
+2. Navigate to the IP address you see in the WiFi network name on port 5000 in a web browser. If the IP address is `192.168.4.1`, you should navigate to `http://192.168.4.1:5000`.
+3. Fill out the Splunk instance form on the right.
+4. Click "Start Polling" to start getting data into Splunk.
+5. Use the web page to start and stop weather events flowing from your Raspberry Pi to your Splunk instance.
 
-Only one user can use the webpage to emit events from the Sense Hat add-on at a time. If this is an issue, file an issue [here](https://github.com/kingkupps/SplunkARWeatherDemoToolkit/issues/new?assignees=&labels=&template=bug_report.md&title=).
+Only one user can use the web page to emit events from the Sense Hat add-on at a time. If this is becomes problematic, file an issue [here](https://github.com/kingkupps/SplunkARWeatherDemoToolkit/issues/new?assignees=&labels=&template=bug_report.md&title=).
 
 ### 6. Use Splunk AR to view the weather data in augmented reality
 

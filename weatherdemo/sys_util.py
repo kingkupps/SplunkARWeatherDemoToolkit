@@ -25,14 +25,16 @@ def write_hostapd_conf(ip_address):
         'wpa_pairwise=TKIP',
         'rsn_pairwise=CCMP'
     ]
-    subprocess.run(['sudo', 'echo', '\n'.join(args), '>', '/etc/hostapd/hostapd.conf'], check=True)
+    with open('/etc/hostapd/hostapd.conf', 'w+') as hostapd_conf:
+        config = '\n'.join(args)
+        hostapd_conf.write(config)
 
 
 def setup_ssid():
     for i in range(20):
         ip_address = get_public_ip_address()
-        if not ip_address:
-            logging.warning('Cannot read publicly accessible IP address yet')
-            time.sleep(3)
-            continue
-        write_hostapd_conf(ip_address)
+        if ip_address:
+            write_hostapd_conf(ip_address)
+            return
+        logging.warning('Unable to lookup publicly accessible IP address')
+        time.sleep(3)

@@ -30,11 +30,16 @@ def write_hostapd_conf(ip_address):
         hostapd_conf.write(config)
 
 
+def restart_hostapd():
+    subprocess.run(['sudo', 'systemctl', 'restart', 'hostapd.service'], check=True)
+
+
 def setup_ssid():
     for i in range(20):
         ip_address = get_public_ip_address()
         if ip_address:
             write_hostapd_conf(ip_address)
+            restart_hostapd()
             return
         logging.warning('Unable to lookup publicly accessible IP address')
         time.sleep(3)

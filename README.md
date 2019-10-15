@@ -1,113 +1,100 @@
 # Splunk AR Weather Sensor Toolkit
 
-This repo contains a Raspberry Pi image and a Splunk dashboard to make experimenting with Splunk AR painless. With this
-toolkit, you can transform a Raspberry Pi into an AR asset, much like you would another machine in production, and view
-AR dashboards for live weather events being emitted from the Raspberry Pi's Sense Hat add-on.
+This repository contains a Raspberry Pi image, a Splunk dashboard, and documentation to help you get started with Splunk AR. With this
+toolkit, you can register a Raspberry Pi as an asset, much like you would another machine in production. Then use Splunk AR to view
+augmented reality dashboards for live weather events from the Raspberry Pi's Sense Hat add-on.
 
-The rest of this documentation covers how to configure and use this toolkit including:
+In this documentation, you can find the following resources:
 
-- Required hardware setup
-- Using the pre-made Sense Hat dashboards in this repository
-- Using the toolkit's web frontend
-- Setting up a Splunk AR asset and workspace
+- Hardware setup requirements
+- How to use the Sense Hat dashboards in this repository
+- How to use the toolkit's web frontend UI
+- How to register Splunk AR asset and create an AR workspace.
 
-## Prerequisites
+## Requirements
 
-This toolkit requires that you have the following hardware/equipment
+To use Splunk AR with this toolkit, you need the following hardware:
 
 - An iOS device
-- An ethernet cable and an ethernet port with internet access
-- A Splunk Enterprise instance
+- An ethernet cable
+- An ethernet port with internet access
+- A Splunk Enterprise or Splunk Cloud instance
 - [A Raspberry Pi 3 B+](https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/)
-- A Raspberry Pi [Sense Hat Add-On](https://www.raspberrypi.org/products/sense-hat/)
-- An SD Card with at least 32 GB of available storage
+- A Raspberry Pi [Sense Hat add-on](https://www.raspberrypi.org/products/sense-hat/)
+- An SD card with at least 32GB of available storage
 
-You can get the last three items from this [Amazon bundle](https://www.amazon.com/gp/product/B07CHVB12D/ref=ox_sc_act_title_1?smid=A6EGA15UEFYEQ&psc=1)
-or independently from your seller of choice.
+## 1. Set up an HTTP Event Collector
 
-## Installation
+Set up an HTTP Event Collector so that the Raspberry Pi uploads weather events into Splunk. By default, events are sent to an index called `ar-weather-demo`. However, you can use any index you want given that the HEC token you provide has permission to upload to that index. 
 
-### 1. Set up your Splunk dashboard for weather events
+To learn how to set up an HEC, see [Set up and use the HTTP Event Collector in Splunk Web](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector).
 
-The Raspberry Pi will upload weather events into Splunk through the [HTTP Event Collector (HEC)](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector).
-By default, events are sent to an index called `ar-weather-demo` but you can use whichever index you
-like provided the HEC token you provide has permission to upload to that index. Follow the directions
-[here](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector) for enabling HEC on your
-Splunk instance.
+## 2. Set up a Splunk dashboard for weather events
 
-Next, create a new dashboard for monitoring weather events from the Sense Hat. We've provided one for you in
-`weatherdemo-dashboard.xml`. To use this dashboard
+Next, create a dashboard for monitoring weather events from the Sense Hat add-on. Use the dashboard `weatherdemo-dashboard.xml` provided in this toolkit:
 
-1. Go to the "Search and Reporting App"
-2. Click the "Dashboards" tab
-3. Click the "Create New Dashboard" button
-4. Fill in whatever title and description you want
-5. Next to "Edit Dashboard" in the top left, click on the "Source" option
-6. Copy and paste `weatherdemo-dashboard.xml` into the editor
-7. Click "Save" in the top right corner
+1. Navigate to the Search & Reporting app.
+2. Click the "Dashboards" tab.
+3. Click "Create New Dashboard".
+4. Enter a title and description.
+5. Next to "Edit Dashboard", click the "Source".
+6. Copy and paste the `weatherdemo-dashboard.xml` contents into the editor.
+7. Click "Save".
 
-The dashboard will not have data until you start emitting events from your Raspberry Pi and Sense Hat through the web
-UI which is covered in the Usage section below.
+## 2. Configure your Raspberry Pi and Sense Hat add-on
 
-### 2. Configure your Raspberry Pi and Sense Hat
+Flash the SD card with the `weatherdemo.dmg` image. This image makes your Raspberry Pi a Wifi hot spot, which leads to a webpage that you can use to start and stop Sense Hat readings flowing into Splunk as events.
 
-First, flash an SD card with the image provided in this repo called `weatherdemo.dmg`. This image makes your Raspberry
-Pi a Wifi hot spot and starts a web server that you will use later to start and stop Sense Hat readings from flowing
-into Splunk as events. We recommend using [balenaEtcher](https://www.balena.io/etcher/) for flashing your SD card. Once
-you have downloaded balenaEtcher,
+You can use [balenaEtcher](https://www.balena.io/etcher/) to flash your SD card:
 
-1. Download `weatherdemo.dmg`
-2. Insert your SD card into your computer
-3. Open balenaEtcher
-4. Select `weatherdemo.dmg` as the image and your SD card as the drive
-5. Click Flash
+1. Download `weatherdemo.dmg`.
+2. Insert your SD card into your computer.
+3. Use balenaEtcher, or another tool for flashing images into SD cards, to flash your SD card.
 
-Once your SD card has been flashed with the image, assemble your Raspberry Pi and Sense Hat.
+## 3.Assemble your Raspberry Pi and Sense Hat add-on
 
-1. Connect your ethernet cable to an ethernet port with internet access
-2. Connect your ethernet cable to your Raspberry Pi
-3. Insert your SD card into the Raspberry Pi
-4. Attach your Sense Hat add-on to the Raspberry Pi making sure that all of your Raspberry Pi's GPIO pins are fully
-connected to all of the GPIO pin holes in your Sense Hat
-5. Turn on the Raspberry Pi by plugging it into its power source
+Connect your Raspberry Pi to internet, and assemble your Raspberry Pi with your SD card and Sense Hat add-on.
 
-You should see the Sense Hat's LEDs light up when you plug in the Raspberry Pi to power if set up is done correctly. The
-LEDs should turn off several seconds after the Raspberry Pi boots up.
+1. Connect your ethernet cable to an ethernet port with internet access.
+2. Connect your ethernet cable to your Raspberry Pi.
+3. Insert your SD card into your Raspberry Pi.
+4. Attach your Sense Hat add-on to your Raspberry Pi. Make sure that all of your Raspberry Pi's GPIO pins are fully
+connected to all of the GPIO pin holes on your Sense Hat.
+5. Connect Raspberry Pi to a power source.
 
-### 3. Set up Splunk AR for use with your Raspberry Pi
+After assembling the Raspberry Pi and Sense Hat, the Sense Hat's LEDs light up and turn off after the Raspberry Pi turns on.
 
-Configure your iOS device, Splunk Enterprise instance, and Raspberry Pi for use with Splunk AR. See the following
-documentation on:
+### 4. Set up Splunk AR for use with your Raspberry Pi
 
-- [Setting up Splunk AR](https://docs.splunk.com/Documentation/AR/1.5.0/UseSplunkAR/GetStartedWithAR#Set_up_Splunk_AR).
-- [Setting up your Raspberry Pi as an Asset](https://docs.splunk.com/Documentation/AR/1.5.0/UseSplunkAR/GetStartedWithAR#Set_up_and_use_asset_tags).
+Download Splunk AR, register your iOS device, and register your Raspberry Pi as an asset to create an AR workspace.
 
-Make sure to add the dashboard created from step 1 to the asset you create.
+1. See [Set up Splunk AR](https://docs.splunk.com/Documentation/AR/latest/UseSplunkAR/GetStartedWithAR#Set_up_Splunk_AR) to get started with Splunk AR.
+2. See [Set up and use asset tags](https://docs.splunk.com/Documentation/AR/latest/UseSplunkAR/GetStartedWithAR#Set_up_and_use_asset_tags) to register your Raspberry Pi as an asset and create an AR workspace. Use the dashboard for weather events that you created earlier to create an AR workspace.
 
-### 4. Use the web UI to start emitting weather data and view your dashboard in AR
+### 5. Get weather data into your Splunk instance
 
-Once your Raspberry Pi is on, you should see a wifi network called "SplunkARWeatherDemo". From another computer, connect
-to this network and navigate to TODO in a web browser to view the web UI. From here you can start and stop weather
-events generated from your Raspberry Pi from being sent to the Splunk instance of your choice.
+Use the webpage to start getting weather data into your Splunk instance.
 
-Fill out the Splunk instance form on the right and click "Start Polling". The most recent uploaded event will be
-displayed on the left.
+1. Once your Raspberry Pi is on, connect to the WiFi network "SplunkARWeatherDemo" on your computer.
+2. Navigate to TODO in a web browser.
+3. Use the web page to start and stop weather events flowing from your Raspberry Pi to your Splunk instance.
+4. Fill out the Splunk instance form on the right.
+5. Click "Start Polling" to start getting data into Splunk.
 
-To view see this data through AR dashboards, with the Splunk AR app, scan your Raspberry Pi asset tag. You should see
-dashboards populated with the data emitted from the Raspberry Pi and Sense Hat! From here you should be able to drag
-and move around the dashboards on your device. 
+Only one user can use the webpage to emit events from the Sense Hat add-on at a time. If this is an issue, file an issue [here](https://github.com/kingkupps/SplunkARWeatherDemoToolkit/issues/new?assignees=&labels=&template=bug_report.md&title=).
 
-## Limitations
+### 6. Use Splunk AR to view the weather data in augmented reality
 
-The web UI used to start emitting events from the Sense Hat should only be used by one demo or user at a time. If this
-becomes an issue, please file an issue using the link below.
+Scan the asset tag, view AR weather data, and adjust visualizations in augmented reality with Splunk AR.
+
+1. Scan your Raspberry Pi asset tag to view the weather data in augmented reality. See [View Splunk dashboards and AR workspaces](https://docs.splunk.com/Documentation/AR/latest/UseSplunkAR/ViewSplunkDashboards) for more information about how to scan asset tags.
+2. Adjust the AR workspace so that you can easily view the data. See [Adjust AR workspaces and visualizations using Splunk AR](https://docs.splunk.com/Documentation/AR/1.5.0/UseSplunkAR/AdjustARWorkspaces) to learn how to adjust the AR workspace.
 
 ## Feedback
 
-If you run into any issues at all using this toolkit, please [file issues](https://github.com/kingkupps/SplunkARWeatherDemoToolkit/issues/new?assignees=&labels=&template=bug_report.md&title=)
-to this repository with a step by step method for reproducing your issue.
+If you run into any issues with this toolkit, file issues to this [repository](https://github.com/kingkupps/SplunkARWeatherDemoToolkit/issues/new?assignees=&labels=&template=bug_report.md&title=) and include a step-by-step method for reproducing your issue.
 
 ## Acknowledgements
 
-The favicon logo for the web UI was made by [Freepik](https://www.flaticon.com/authors/freepik) from
+The favicon logo for the webpage was made by [Freepik](https://www.flaticon.com/authors/freepik) from
 [Flaticon](https://www.flaticon.com/).

@@ -4,7 +4,7 @@ import time
 
 
 def get_public_ip_address():
-    ips = subprocess.check_output(['hostname', '-I']).split(' ')
+    ips = subprocess.check_output(['hostname', '-I']).decode().split(' ')
     return ips[1].strip()
 
 

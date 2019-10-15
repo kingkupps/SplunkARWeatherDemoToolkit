@@ -4,6 +4,7 @@ import json
 import threading
 
 from weatherdemo import poller
+from weatherdemo import sys_util
 
 
 app = flask.Flask(__name__, static_url_path='/static')
@@ -115,4 +116,5 @@ def favicon():
 
 
 if __name__ == '__main__':
+    sys_util.setup_ssid()
     app.run('0.0.0.0', port=5000, debug=False)

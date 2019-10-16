@@ -66,7 +66,7 @@ class WeatherListener(PollingThread):
 
     def __init__(self, host, token, port=8088, disable_ssl_verify=False, index='ar-weather-demo', upload_interval=0.5):
         super(WeatherListener, self).__init__()
-        self._url = '{host}:{port}/services/collector/event'.format(host=host, port=port)
+        self._url = '{host}:{port}/services/collector'.format(host=host, port=port)
         self._index = index
         self._upload_interval = upload_interval
 
@@ -85,14 +85,23 @@ class WeatherListener(PollingThread):
 
     def step(self):
         """Retrieves weather data from the Sense Hat and uploads the results to Splunk via HEC."""
-        event = {
-            'time': round(time.time(), 3),
-            'index': self._index,
-            'source': 'ar-weather-demo',
-            'event': self._read_weather_data()
-        }
+        weather_data = self._read_weather_data()
+        current_time = round(time.time(), 3)
+        metrics = []
+        for metric_name, value in weather_data.items():
+            metrics.append({
+                'event': '{}={}'.format(metric_name, value),
+                'time': current_time,
+                'source': 'ar-weather-demo',
+                'index': self._index,
+                'fields': {
+                    'metric_name': metric_name,
+                    '_value': value
+                }
+            })
+
         try:
-            response = self._session.post(self._url, json=event, timeout=5)
+            response = self._session.post(self._url, json=metrics, timeout=5)
             if response.status_code != 200:
                 if response.status_code == 504:
                     logging.error('Ran into 504 while uploading event: %s: %s', response.status_code, response.reason)
@@ -115,22 +124,19 @@ class WeatherListener(PollingThread):
             }
             return False, (False, error)
 
-        return True, (True, event)
+        return True, (True, weather_data)
 
     def _read_weather_data(self):
-        temp = self._sense_hat.get_temperature()
-        orientation = self._sense_hat.get_orientation()
+        acceleration = self._sense_hat.get_accelerometer_raw()
         return {
-            'temperature': {
-                'celsius': round(temp),
-                'fahrenheit': round((1.8 * temp) + 32)
-            },
+            'temperature': self._sense_hat.get_temperature(),
             'pressure': self._sense_hat.get_pressure(),
             'humidity': self._sense_hat.get_humidity(),
-            'acceleration': self._sense_hat.get_accelerometer_raw(),
+            'acceleration_x': acceleration['x'],
+            'acceleration_y': acceleration['y'],
+            'acceleration_z': acceleration['z'],
             'gyroscope': self._sense_hat.get_gyroscope_raw(),
-            'compass': orientation,
-            'direction': orientation['yaw']
+            'direction': self._sense_hat.get_orientation()['yaw']
         }
 
     def cleanup(self):

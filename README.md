@@ -25,7 +25,9 @@ To use Splunk AR with this toolkit, you need the following hardware:
 
 ## 1. Set up an HTTP Event Collector
 
-Set up an HTTP Event Collector so that the Raspberry Pi uploads weather events into Splunk. By default, events are sent to an index called `ar-weather-demo`. However, you can use any index you want given that the HEC token you provide has permission to upload to that index. 
+Set up an HTTP Event Collector so that the Raspberry Pi uploads weather metrics into Splunk. By default, events are sent to an index called `ar-weather-demo`. However, you can use any index you want given that the HEC token you provide has permission to upload to that index. 
+
+**Make sure to use a metrics index rather than an events index.**
 
 To learn how to set up an HEC, see [Set up and use the HTTP Event Collector in Splunk Web](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector).
 

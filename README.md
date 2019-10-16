@@ -68,12 +68,12 @@ After assembling the Raspberry Pi and Sense Hat, the Sense Hat's LEDs light up a
 
 ## 4. Download and set up Splunk AR for use with your Raspberry Pi
 
-Download Splunk AR from the App Store, register your iOS device, and register your Raspberry Pi as an asset to create an AR workspace.
+Download Splunk AR from the App Store, register your mobile device, and register your Raspberry Pi as an asset to create an AR workspace.
 
-See [Set up Splunk AR](https://docs.splunk.com/Documentation/AR/latest/UseSplunkAR/GetStartedWithAR#Set_up_Splunk_AR) for a guide on how to get started with Splunk AR.
+See [Set up Splunk AR](https://docs.splunk.com/Documentation/AR/latest/UseSplunkAR/GetStartedWithAR#Set_up_Splunk_AR) for an overview and a guide on how to get started with Splunk AR.
 
-1. See [Download Splunk AR](https://docs.splunk.com/Documentation/AR/1.5.0/UseSplunkARinTheField/Installation#Download_Splunk_AR) for iOS and hardware requirements.
-2. See [Set up and use asset tags](https://docs.splunk.com/Documentation/AR/latest/UseSplunkAR/GetStartedWithAR#Set_up_and_use_asset_tags) to register your Raspberry Pi as an asset and create an AR workspace. Use the dashboard for weather events that you created earlier to create an AR workspace.
+1. Download Splunk AR on your mobile device. See [Download Splunk AR](https://docs.splunk.com/Documentation/AR/1.5.0/UseSplunkARinTheField/Installation#Download_Splunk_AR) for download requirements.
+2. Register your Raspberry Pi as an asset. See [Set up and use asset tags](https://docs.splunk.com/Documentation/AR/latest/UseSplunkAR/GetStartedWithAR#Set_up_and_use_asset_tags) to register your Raspberry Pi as an asset and create an AR workspace. Use the dashboard for weather events that you created earlier to create an AR workspace.
 
 ## 5. Get weather data into your Splunk instance
 

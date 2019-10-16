@@ -87,11 +87,11 @@ The Raspberry Pi starts a web server that you will use to collect events from th
 
 Only one user can use the web page to emit events from the Sense Hat add-on at a time. If this is becomes problematic, file an issue [here](https://github.com/kingkupps/SplunkARWeatherDemoToolkit/issues/new?assignees=&labels=&template=bug_report.md&title=).
 
-## 6. Use Splunk AR to view the weather data in augmented reality
+## 6. View the weather data in augmented reality with Splunk AR
 
 Scan the asset tag, view AR weather data, and adjust visualizations in augmented reality with Splunk AR.
 
-1. Scan your Raspberry Pi asset tag to view the weather data in augmented reality. See [View Splunk dashboards and AR workspaces](https://docs.splunk.com/Documentation/AR/1.5.0/UseSplunkARinTheField/ViewSplunkDashboards) for more information about how to scan asset tags.
+1. With your mobile device, Scan your Raspberry Pi asset tag to view the weather data in augmented reality. See [View Splunk dashboards and AR workspaces](https://docs.splunk.com/Documentation/AR/1.5.0/UseSplunkARinTheField/ViewSplunkDashboards) for more information about how to scan asset tags.
 2. Adjust the AR workspace so that you can easily view the data. See [Adjust AR workspaces and visualizations using Splunk AR](https://docs.splunk.com/Documentation/AR/1.5.0/UseSplunkAR/AdjustARWorkspaces) to learn how to adjust the AR workspace.
 
 ## Feedback

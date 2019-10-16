@@ -1,7 +1,7 @@
 # Splunk AR Weather Sensor Toolkit
 
 This repository contains a Raspberry Pi image, a Splunk dashboard, and documentation to help you get started with Splunk AR. With this
-toolkit, you can register a Raspberry Pi as an asset, much like you would another machine in production. Then. you can view
+toolkit, you can register a Raspberry Pi as an asset, much like you would another machine in production. Then you can view
 augmented reality dashboards for live weather events from the Raspberry Pi's Sense Hat add-on with the Splunk AR mobile app.
 
 In this documentation, you can find the following resources:

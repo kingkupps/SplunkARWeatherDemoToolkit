@@ -103,24 +103,16 @@ class WeatherListener(PollingThread):
         try:
             response = self._session.post(self._url, json=metrics, timeout=5)
             if response.status_code != 200:
-                if response.status_code == 504:
-                    logging.error('Ran into 504 while uploading event: %s: %s', response.status_code, response.reason)
-                    return True, (True, None)
-
-                error = {
-                    'status': response.status_code,
-                    'reason': response.reason
-                }
-                if response.status_code == 403:
-                    error['tip'] = 'Are you using the right HEC token?'
-                elif response.status_code == 400:
-                    error['tip'] = 'Are you uploading to an allowed index?'
+                error = response.json()
+                error['tip'] = ('For some reason your weather data could not be uploaded. Check https://www.freecodecam'
+                                'p.org/news/how-to-write-a-good-software-design-document-66fcf019569c/ under the POST '
+                                'section for more details on why this happened.')
                 return False, (False, error)
         except Exception as e:
             error = {
                 'status': 500,
                 'reason': str(e),
-                'tip': 'Are you connecting to the correct HEC port? Does the hostname start with http:// or https://?'
+                'tip': 'Is there a typo in the Splunk host name? Is it prefixed by \'http://\' or \'https://\'?'
             }
             return False, (False, error)
 
@@ -128,6 +120,7 @@ class WeatherListener(PollingThread):
 
     def _read_weather_data(self):
         acceleration = self._sense_hat.get_accelerometer_raw()
+        gyroscope = self._sense_hat.get_gyroscope_raw()
         return {
             'temperature': self._sense_hat.get_temperature(),
             'pressure': self._sense_hat.get_pressure(),
@@ -135,7 +128,9 @@ class WeatherListener(PollingThread):
             'acceleration_x': acceleration['x'],
             'acceleration_y': acceleration['y'],
             'acceleration_z': acceleration['z'],
-            'gyroscope': self._sense_hat.get_gyroscope_raw(),
+            'gyroscope_x': gyroscope['x'],
+            'gyroscope_y': gyroscope['y'],
+            'gyroscope_z': gyroscope['z'],
             'direction': self._sense_hat.get_orientation()['yaw']
         }
 

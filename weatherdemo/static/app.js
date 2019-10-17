@@ -10,6 +10,7 @@ const PORT_FIELD_ID = 'port';
 
 // Buttons
 const ALL_EVENTS_ID = 'all-uploaded-events-link';
+const HELP_ID = 'help-link';
 const START_POLLING_BUTTON_ID = 'start-polling-button';
 const STOP_POLLING_BUTTON_ID = 'stop-polling-button';
 
@@ -38,17 +39,16 @@ class PollingController {
         setCardContent(WAITING_FOR_DATA_TEXT);
         const startUrl = '/start' + getFormValuesAsGetParameters();
         get(startUrl).then(() => {
-                document.getElementById(START_POLLING_BUTTON_ID).setAttribute('disabled', 'disabled');
-                document.getElementById(STOP_POLLING_BUTTON_ID).removeAttribute('disabled');
-                this.isPolling = true;
-                this.loadLatestEvent();
-            }).catch(reason => setCardContent(reason));
+            document.getElementById(START_POLLING_BUTTON_ID).setAttribute('disabled', 'disabled');
+            document.getElementById(STOP_POLLING_BUTTON_ID).removeAttribute('disabled');
+            this.isPolling = true;
+            this.loadLatestEvent();
+        }).catch(reason => setCardContent(reason));
     }
 
     /** Polls every 0.2 seconds for the latest uploaded event and updates recent event card appropriately. */
     loadLatestEvent() {
         get('/last').then(event => {
-            console.log('Successful response with content: ' + event);
             if (event !== null) {
                 setCardContent(event);
             }
@@ -66,28 +66,39 @@ class PollingController {
      * polling button, and disables the stop polling button.
      */
     stopPolling() {
+        if (!this.isPolling) {
+            return;
+        }
         get('/stop').then(() => {
             this.isPolling = false;
             document.getElementById(START_POLLING_BUTTON_ID).removeAttribute('disabled');
             document.getElementById(STOP_POLLING_BUTTON_ID).setAttribute('disabled', 'disabled');
         }).catch(reason => setCardContent(reason));
     }
-}
 
+    /** Opens a new tab with a Splunk search revealing what metrics have been uploaded so far and stops polling. */
+    seeAllEvents() {
+        if (!highlightFormInput(HOST_FIELD_ID)) {
+            console.log('Returning early');
+            return;
+        }
+        const hostname = getInputValue(HOST_FIELD_ID);
+        const indexParam = encodeURIComponent('index=' + getInputValue(INDEX_FIELD_ID, 'ar-weather-demo'));
 
-/** Opens a new tab or window containing a Splunk search using the given Splunk hostname and index. */
-function seeAllEvents() {
-    if (!highlightFormInput(HOST_FIELD_ID)) {
-        console.log('Returning early');
-        return;
+        this.stopPolling();
+
+        // Open Splunk in a new tab or window depending on the user's system preferences
+        const searchURL = `${hostname}:8000/en-US/app/search/search?q=${indexParam}`;
+        const splunkWindow = window.open(searchURL, 'Splunk_Search');
+        splunkWindow.focus();
     }
-    const hostname = getInputValue(HOST_FIELD_ID);
-    const indexParam = encodeURIComponent('index=' + getInputValue(INDEX_FIELD_ID, 'ar-weather-demo'));
 
-    // Open Splunk in a new tab or window depending on the user's system preferences
-    const searchURL = `${hostname}:8000/en-US/app/search/search?q=${indexParam}`;
-    const splunkWindow = window.open(searchURL, 'Splunk_Search');
-    splunkWindow.focus();
+    /** Opens the GitHub repo in a new tab and stops polling. */
+    help() {
+        this.stopPolling();
+        const readmeURL = 'https://github.com/kingkupps/SplunkARWeatherDemoToolkit';
+        window.open(readmeURL, 'README').focus();
+    }
 }
 
 
@@ -190,5 +201,6 @@ window.addEventListener('load',  () => {
     const pollingController = new PollingController();
     document.getElementById(START_POLLING_BUTTON_ID).addEventListener('click', () => pollingController.startPolling());
     document.getElementById(STOP_POLLING_BUTTON_ID).addEventListener('click', () => pollingController.stopPolling());
-    document.getElementById(ALL_EVENTS_ID).addEventListener('click', () => seeAllEvents());
+    document.getElementById(ALL_EVENTS_ID).addEventListener('click', () => pollingController.seeAllEvents());
+    document.getElementById(HELP_ID).addEventListener('click', () => pollingController.help());
 });

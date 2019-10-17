@@ -1,57 +1,84 @@
 <dashboard>
-  <label>Splunk AR Weather Demo</label>
+  <label>Weather Demo</label>
   <description>Dashboards for the Splunk AR Sense Hat Weather Demo</description>
   <row>
     <panel>
       <title>Humidity</title>
-      <chart>
+      <single>
         <search>
-          <query>| mstats latest(_value) as Humidity where metric_name="humidity" AND index="ar-weather-demo"</query>
+          <query>| mstats latest(humidity) as Humidity WHERE index="ar-weather-demo"</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
           <refresh>1s</refresh>
           <refreshType>delay</refreshType>
         </search>
-        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
-        <option name="charting.axisTitleX.visibility">visible</option>
-        <option name="charting.axisTitleY.visibility">visible</option>
-        <option name="charting.axisTitleY2.visibility">visible</option>
-        <option name="charting.axisX.abbreviation">none</option>
-        <option name="charting.axisX.scale">linear</option>
-        <option name="charting.axisY.abbreviation">none</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.axisY2.abbreviation">none</option>
-        <option name="charting.axisY2.enabled">0</option>
-        <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart">radialGauge</option>
-        <option name="charting.chart.bubbleMaximumSize">50</option>
-        <option name="charting.chart.bubbleMinimumSize">10</option>
-        <option name="charting.chart.bubbleSizeBy">area</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.showDataLabels">none</option>
-        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
-        <option name="charting.chart.stackMode">default</option>
-        <option name="charting.chart.style">shiny</option>
-        <option name="charting.drilldown">all</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
-        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
-        <option name="charting.legend.mode">standard</option>
-        <option name="charting.legend.placement">right</option>
-        <option name="charting.lineWidth">2</option>
+        <option name="numberPrecision">0.0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
         <option name="refresh.display">progressbar</option>
         <option name="trellis.enabled">0</option>
         <option name="trellis.scales.shared">1</option>
         <option name="trellis.size">medium</option>
-      </chart>
+        <option name="unit">%</option>
+      </single>
     </panel>
+    <panel>
+      <title>Pressure</title>
+      <single>
+        <search>
+          <query>| mstats latest(pressure) as "Pressure" WHERE index="ar-weather-demo"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>1s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unit">mb</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">0</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Direction</title>
+      <single>
+        <search>
+          <query>| mstats latest(direction) as d WHERE index="ar-weather-demo" 
+| eval Direction=case(d &lt; 22.5, "N", d &lt; 67.5, "NE", d &lt; 112.5, "E", d &lt; 157.5, "SE", d &lt; 202.5, "S", d &lt; 247.5, "SW", d &lt; 292.5, "W", d &lt; 337.5, "NW", true(), "N") 
+| table Direction</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>1s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+  </row>
+  <row>
     <panel>
       <title>CPU Temp (C)</title>
       <chart>
         <search>
-          <query>| mstats latest(_value) as "Temperature (C)" where metric_name="temperature" AND index="ar-weather-demo"</query>
+          <query>| mstats latest(temperature) as t WHERE index="ar-weather-demo" 
+| eval "CPU Temp (C)"=round(t, 1) 
+| table "CPU Temp (C)"</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -98,9 +125,9 @@
       <title>CPU Temp (F)</title>
       <chart>
         <search>
-          <query>| mstats latest(_value) as t where metric_name="temperature" AND index="ar-weather-demo" 
-| eval "Temperature (F)"=((1.8 * t) + 32) 
-| table "Temperature (F)"</query>
+          <query>| mstats latest(temperature) as t WHERE index=ar-weather-demo
+| eval "CPU Temp (F)"=round(((1.8 * t) + 32), 1)
+| table "CPU Temp (F)"</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -142,56 +169,6 @@
         <option name="trellis.scales.shared">1</option>
         <option name="trellis.size">medium</option>
       </chart>
-    </panel>
-  </row>
-  <row>
-    <panel>
-      <title>Direction</title>
-      <single>
-        <search>
-          <query>| mstats latest(_value) as d where metric_name="direction" AND index="ar-weather-demo" 
-| eval Direction=case(d &lt; 22.5, "N", d &lt; 67.5, "NE", d &lt; 112.5, "E", d &lt; 157.5, "SE", d &lt; 202.5, "S", d &lt; 247.5, "SW", d &lt; 292.5, "W", d &lt; 337.5, "NW", true(), "N") 
-| table Direction</query>
-          <earliest>-24h@h</earliest>
-          <latest>now</latest>
-          <sampleRatio>1</sampleRatio>
-          <refresh>1s</refresh>
-          <refreshType>delay</refreshType>
-        </search>
-        <option name="drilldown">none</option>
-        <option name="refresh.display">progressbar</option>
-      </single>
-    </panel>
-    <panel>
-      <title>Pressure</title>
-      <single>
-        <search>
-          <query>| mstats latest(_value) as "Pressure" where metric_name="pressure" AND index="ar-weather-demo"</query>
-          <earliest>-24h@h</earliest>
-          <latest>now</latest>
-          <sampleRatio>1</sampleRatio>
-          <refresh>1s</refresh>
-          <refreshType>delay</refreshType>
-        </search>
-        <option name="colorBy">value</option>
-        <option name="colorMode">none</option>
-        <option name="drilldown">none</option>
-        <option name="numberPrecision">0.0</option>
-        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
-        <option name="rangeValues">[0,30,70,100]</option>
-        <option name="refresh.display">progressbar</option>
-        <option name="showSparkline">1</option>
-        <option name="showTrendIndicator">1</option>
-        <option name="trellis.enabled">0</option>
-        <option name="trellis.scales.shared">1</option>
-        <option name="trellis.size">medium</option>
-        <option name="trendColorInterpretation">standard</option>
-        <option name="trendDisplayMode">absolute</option>
-        <option name="unit">mb</option>
-        <option name="unitPosition">after</option>
-        <option name="useColors">0</option>
-        <option name="useThousandSeparators">0</option>
-      </single>
     </panel>
   </row>
 </dashboard>

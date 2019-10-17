@@ -83,12 +83,13 @@ class PollingController {
             return;
         }
         const hostname = getInputValue(HOST_FIELD_ID);
-        const indexParam = encodeURIComponent('index=' + getInputValue(INDEX_FIELD_ID, 'ar-weather-demo'));
+        const index = getInputValue(INDEX_FIELD_ID, 'ar-weather-demo');
+        const searchParam = encodeURIComponent(`| mstats avg(_value) as Average, count(_value) Count, latest(_value) as Latest WHERE index="${index}" AND metric_name=* BY metric_name\n| eval Metric=metric_name\n| table Metric, Count, Average, Latest`);
 
         this.stopPolling();
 
         // Open Splunk in a new tab or window depending on the user's system preferences
-        const searchURL = `${hostname}:8000/en-US/app/search/search?q=${indexParam}`;
+        const searchURL = `${hostname}:8000/en-US/app/search/search?q=${searchParam}`;
         const splunkWindow = window.open(searchURL, 'Splunk_Search');
         splunkWindow.focus();
     }

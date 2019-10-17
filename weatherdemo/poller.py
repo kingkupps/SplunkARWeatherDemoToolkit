@@ -1,4 +1,3 @@
-import logging
 import queue
 import requests
 import sense_hat

@@ -45,11 +45,11 @@ Create a dashboard for monitoring weather events from the Sense Hat add-on. Use 
 
 ## 2. Configure your Raspberry Pi and Sense Hat add-on
 
-Flash the SD card with the [this image](https://ar-demo-image.s3-us-west-2.amazonaws.com/WeatherDemo.dmg). This image makes your Raspberry Pi a Wifi hot spot, which leads to a webpage that you can use to start and stop Sense Hat readings flowing into Splunk as events.
+Flash the SD card with the [this image](https://ar-demo-image.s3-us-west-2.amazonaws.com/weatherdemov2.dmg). This image makes your Raspberry Pi a Wifi hot spot, which leads to a webpage that you can use to start and stop Sense Hat readings flowing into Splunk as events.
 
 You can use [balenaEtcher](https://www.balena.io/etcher/) to flash your SD card:
 
-1. Download [the image](https://ar-demo-image.s3-us-west-2.amazonaws.com/WeatherDemo.dmg).
+1. Download [the image](https://ar-demo-image.s3-us-west-2.amazonaws.com/weatherdemov2.dmg).
 2. Insert your SD card into your computer.
 3. Use balenaEtcher, or another tool for flashing images into SD cards, to flash your SD card.
 

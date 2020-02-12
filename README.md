@@ -79,7 +79,7 @@ See [Set up Splunk AR](https://docs.splunk.com/Documentation/AR/latest/UseSplunk
 
 The Raspberry Pi starts a web server that you will use to collect events from the Sense Hat.
 
-1. Once your Raspberry Pi is on, connect to the WiFi network beginning with "SplunkAR" and ending with an IP address from your computer.
+1. Once your Raspberry Pi is on, connect to the WiFi network beginning with "SplunkAR" and ending with an IP address from your computer. The wifi password will be "splunkARrocks".
 2. Navigate to the IP address you see in the WiFi network name on port 5000 in a web browser. If the IP address is `192.168.4.1`, you should navigate to `http://192.168.4.1:5000`.
 3. Fill out the Splunk instance form on the right.
 4. Click "Start Polling" to start getting data into Splunk.
